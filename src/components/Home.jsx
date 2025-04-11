@@ -63,7 +63,9 @@ function Home() {
             ))}
           </Row>
         ) : (
-          <p>Nessun anime trovato.</p>
+          <h4 className="text-center">
+            Naviga cercando i tuoi anime preferiti
+          </h4>
         )}
       </div>
     </div>
