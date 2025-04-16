@@ -9,12 +9,18 @@ import {
   Spinner,
 } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
+import { FaHeart, FaRegHeart } from 'react-icons/fa'
+import { useFavorites } from '../context/FavoriteProvider'
+import { CiStar } from 'react-icons/ci'
+import axios from 'axios'
 
 function Home() {
   const [search, setSearch] = useState('')
   const [animeData, setAnimeData] = useState([])
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
+  const { favorites, addFavorite } = useFavorites()
+  const [expanded, setExpanded] = useState({})
 
   useEffect(() => {
     const fetchInitialAnime = async () => {
@@ -24,6 +30,7 @@ function Home() {
           `https://api.jikan.moe/v4/anime?order_by=score&sort=desc&limit=24&page=1`
         )
         const data = await response.json()
+
         setAnimeData(data.data)
         setPage(2)
       } catch (error) {
@@ -59,6 +66,7 @@ function Home() {
       setLoading(true)
       const response = await fetch(`https://api.jikan.moe/v4/anime?q=${search}`)
       const data = await response.json()
+      // console.log(data)
 
       const filteredResults = data.data.filter((anime) =>
         anime.title.toLowerCase().includes(search.toLowerCase())
@@ -70,6 +78,16 @@ function Home() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const isFavorite = (anime) =>
+    favorites.some((fav) => fav.mal_id === anime.mal_id)
+
+  const toggleExpand = (id) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }))
   }
 
   return (
@@ -95,9 +113,10 @@ function Home() {
               {animeData.map((anime) => (
                 <Col key={anime.mal_id}>
                   <Card
-                    className="h-100 w-100 border-0"
+                    className="w-100 h-100 border-1"
                     style={{
                       borderRadius: '20px',
+                      height: expanded ? '100%' : '400px',
                     }}
                   >
                     <Card.Img
@@ -112,22 +131,55 @@ function Home() {
                       }}
                     />
                     <Card.Body className="d-flex flex-column">
-                      <Card.Title>{anime.title}</Card.Title>
+                      <Card.Title>
+                        {anime.title} {anime.year ? '(' + anime.year + ')' : ''}
+                      </Card.Title>
+                      <div className="d-flex justify-content-between">
+                        <p className="fs-4">
+                          {anime.rank ? '(' + anime.rank + '°' + ')' : ''}
+                        </p>
+                        <div className="d-flex flex-column">
+                          <p className="fs-5">
+                            <CiStar size={20} /> {anime.score}
+                          </p>
+                        </div>
+                      </div>
+
                       <Card.Text style={{ fontSize: '0.9rem', color: '#555' }}>
-                        {anime.synopsis
-                          ? anime.synopsis.slice(0, 100) + '...'
-                          : 'No description available.'}
+                        {anime.synopsis ? (
+                          <>
+                            {expanded[anime.mal_id]
+                              ? anime.synopsis
+                              : anime.synopsis.slice(0, 100) + '...'}
+                            <button
+                              onClick={() => toggleExpand(anime.mal_id)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#007bff',
+                                cursor: 'pointer',
+                                paddingLeft: '5px',
+                              }}
+                            >
+                              {expanded[anime.mal_id]
+                                ? 'Leggi meno'
+                                : 'Leggi di più'}
+                            </button>
+                          </>
+                        ) : (
+                          'Descrizione non disponibile.'
+                        )}
                       </Card.Text>
+
                       <div className="mt-auto d-flex justify-content-between align-items-center">
                         <Button
-                          variant="primary"
-                          href={anime.url}
-                          target="_blank"
+                          variant={
+                            isFavorite(anime) ? 'danger' : 'outline-danger'
+                          }
+                          className="ms-2"
+                          onClick={() => addFavorite(anime)}
                         >
-                          Dettagli ➡️
-                        </Button>
-                        <Button variant="outline-danger" className="ms-2">
-                          ❤️
+                          {isFavorite(anime) ? <FaHeart /> : <FaRegHeart />}
                         </Button>
                       </div>
                     </Card.Body>

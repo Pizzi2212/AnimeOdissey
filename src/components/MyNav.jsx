@@ -10,7 +10,9 @@ function MyNav() {
     <Navbar expand="lg" bg="dark" variant="dark">
       <Container className="d-flex align-items-center">
         <Nav className="flex-grow-1 fs-3">
-          <Nav.Link href="#home">Home</Nav.Link>
+          <Nav.Link as={Link} to="/">
+            Home
+          </Nav.Link>
         </Nav>
 
         <Navbar.Brand className="mx-auto">
@@ -18,7 +20,9 @@ function MyNav() {
         </Navbar.Brand>
 
         <Nav className="flex-grow-1 justify-content-end fs-3">
-          <Nav.Link href="#lista">La mia lista</Nav.Link>
+          <Nav.Link as={Link} to="/list">
+            La mia lista
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>
