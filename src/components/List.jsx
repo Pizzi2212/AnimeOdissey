@@ -50,14 +50,19 @@ function List() {
   return (
     <div>
       <Container className="mt-5">
-        <h2 className="text-center text-light">I tuoi Anime Preferiti</h2>
+        <h2 className="text-center text-light">I tuoi Anime</h2>
         <Row xs={1} sm={2} md={3} lg={4} className="g-4 mt-4">
           {favorites.length > 0 ? (
             favorites.map((anime) => (
               <Col key={anime.mal_id}>
                 <Card
-                  className="h-100 w-100 border-0"
-                  style={{ borderRadius: '20px' }}
+                  className="h-100 w-100 border-0 shadow-lg anime-card"
+                  style={{
+                    borderRadius: '20px',
+                    backgroundColor: '#1e1e2f',
+                    color: 'white',
+                    transition: 'transform 0.3s, box-shadow 0.3s',
+                  }}
                 >
                   <Card.Img
                     variant="top"
@@ -71,23 +76,28 @@ function List() {
                     }}
                   />
                   <Card.Body className="d-flex flex-column">
-                    <Card.Title>
-                      {anime.title} {anime.year ? '(' + anime.year + ')' : ''}
+                    <Card.Title className="mb-3 text-white fs-5">
+                      {anime.title} {anime.year ? `(${anime.year})` : ''}
                     </Card.Title>
 
-                    <div className="mt-auto d-flex justify-content-between align-items-center">
+                    <div className="d-flex justify-content-between align-items-center mt-auto">
                       <Button
-                        variant="info"
+                        variant="outline-light"
                         onClick={() => handleShowModal(anime)}
+                        style={{ fontWeight: 'bold' }}
                       >
-                        Voto: {scores[anime.mal_id] || '1'}
+                        Voto:{' '}
+                        <span className="badge bg-primary ms-2">
+                          {scores[anime.mal_id] || '1'}
+                        </span>
                       </Button>
+
                       <Button
-                        variant="danger"
-                        className="ms-2"
+                        variant="outline-danger"
                         onClick={() => handleRemoveFavorite(anime)}
+                        className="ms-2"
                       >
-                        <FaHeart /> Rimuovi
+                        <FaHeart className="me-1" /> Rimuovi
                       </Button>
                     </div>
                   </Card.Body>

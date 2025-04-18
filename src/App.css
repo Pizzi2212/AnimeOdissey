@@ -7,3 +7,9 @@ body {
   background-attachment: fixed;
   background-position: center;
 }
+
+.custom-placeholder::placeholder {
+  color: #ffffff !important;
+  opacity: 1;
+  text-shadow: none;
+}
