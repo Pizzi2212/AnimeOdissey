@@ -112,7 +112,7 @@ function Home() {
         >
           <Form.Control
             type="text"
-            placeholder="Cerca anime leggendari..."
+            placeholder="Cerca anime..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
